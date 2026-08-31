@@ -14,6 +14,50 @@ This project performs a full data-mining workflow on the *Bank Marketing* datase
 
 ---
 
+## Project Structure
+
+All non-exploratory logic (preprocessing, clustering, outlier detection, feature
+selection, model training, evaluation) lives in the `src/` package, not in the
+notebooks. Each notebook imports and calls these functions rather than
+reimplementing them, so there is a single, tested implementation shared by the
+notebooks and the CLI below.
+
+```
+config.yaml           # all pipeline parameters (paths, hyperparameters, search space)
+src/
+  config.py            # loads config.yaml
+  data.py               # raw/processed CSV loading
+  preprocessing.py       # cleaning, imputation, encoding, scaling
+  clustering.py          # KMeans + silhouette k-sweep
+  outliers.py            # Isolation Forest
+  features.py             # L1-logistic feature selection
+  train.py                 # Random Forest training, SMOTE, hyperparameter search
+  evaluate.py                # metrics + plotting
+  pipeline.py                 # CLI entrypoint tying the stages together
+notebooks/                      # EDA and analysis, calling into src/
+```
+
+## Reproducing this Project
+
+```bash
+pip install -r requirements.txt
+
+# Run the full pipeline (preprocess -> cluster -> outliers -> train -> tune)
+python -m src.pipeline
+
+# Or run a subset of stages
+python -m src.pipeline --stages preprocess train
+```
+
+This regenerates `data/processed/bank_marketing_preprocessed.csv` and prints a
+JSON summary of clustering, outlier, and classification metrics for every
+model variant described below — the same numbers reported in this README.
+All parameters (Random Forest hyperparameters, SMOTE/feature-selection
+settings, the k range for clustering, Isolation Forest contamination, the
+hyperparameter search space) live in `config.yaml`.
+
+---
+
 ## 1. Preprocessing
 
 Cleaned and prepared the dataset using:
