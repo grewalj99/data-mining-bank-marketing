@@ -56,6 +56,20 @@ All parameters (Random Forest hyperparameters, SMOTE/feature-selection
 settings, the k range for clustering, Isolation Forest contamination, the
 hyperparameter search space) live in `config.yaml`.
 
+## Testing
+
+```bash
+pip install -r requirements-dev.txt
+ruff check src/ tests/
+pytest
+```
+
+`tests/` covers each `src/` module against small synthetic fixtures (fast,
+no dependency on the real 41k-row dataset), plus one end-to-end test that
+runs the full `src.pipeline` CLI against a temporary dataset and config.
+A [GitHub Actions workflow](.github/workflows/ci.yml) runs both on every
+push and pull request against `main`.
+
 ---
 
 ## 1. Preprocessing

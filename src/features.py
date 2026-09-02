@@ -20,4 +20,11 @@ def select_features_l1(
     model.fit(X_train, y_train)
     coefs = model.coef_.ravel()
     mask = np.abs(coefs) > 1e-6
+
+    if not mask.any():
+        raise ValueError(
+            f"L1 feature selection with C={C} zeroed out every coefficient — "
+            "no features were selected. Try a larger C."
+        )
+
     return mask, model
